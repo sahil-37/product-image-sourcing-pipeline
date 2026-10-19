@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 
 import "./globals.css";
+// Detail-page, review-control and banner styles. Never imported before, so
+// /product/[id] rendered unstyled (single column, bare browser buttons).
+import "../globals.css";
 
 export const metadata: Metadata = {
   title: "Catalogue Image Review",

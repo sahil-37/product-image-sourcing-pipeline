@@ -30,6 +30,19 @@ export const NEVER_UPLOADED_KEY = "__never_uploaded__";
  * the latest one is what "has this shipped to the OMS" actually means --
  * a join would multiply rows or require its own dedup logic at every call
  * site instead of once here.
+ *
+ * The outer column is written out as "products"."id" on purpose. Drizzle
+ * renders ${products.id} unqualified ("id") when this expression sits in a
+ * select list, and inside this subquery a bare "id" resolves to
+ * upload_jobs.id -- so every row read as never-uploaded on /browse's cards
+ * and Upload tallies, while WHERE (where Drizzle does qualify it) filtered
+ * correctly.
+ *
+ * The fallback key is inlined (sql.raw of a constant) rather than bound as a
+ * parameter because /browse groups by this expression, and
+ * Postgres only matches a select-list expression to its GROUP BY copy when
+ * the two render identically -- bound, they become $1 and $2 and the query
+ * fails with "subquery uses ungrouped column".
  */
 export const uploadStatusExpr = sql<string>`coalesce((
   select case upload_jobs.state
@@ -38,10 +51,10 @@ export const uploadStatusExpr = sql<string>`coalesce((
     else 'queued'
   end
   from upload_jobs
-  where upload_jobs.product_id = ${products.id}::text
+  where upload_jobs.product_id = "products"."id"::text
   order by upload_jobs.created_at desc
   limit 1
-), ${NEVER_UPLOADED_KEY}::text)`;
+), ${sql.raw(`'${NEVER_UPLOADED_KEY}'`)}::text)`;
 
 export type ProductFilter = {
   status?: string;
