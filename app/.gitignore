@@ -1,0 +1,7 @@
+.vercel
+.env*
+
+# Pipeline-pushed product images, served statically. Generated + large, same
+# spirit as library/ and work/ in the repo root -- see IMAGE_STORE in
+# push_to_web.py / worker.py.
+/public/images/

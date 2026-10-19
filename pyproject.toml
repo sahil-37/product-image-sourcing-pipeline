@@ -1,0 +1,48 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lowprice"
+version = "0.1.0"
+description = "Sources, verifies and uploads wholesale product images"
+requires-python = ">=3.11"
+dependencies = [
+    "requests>=2.31",
+    "Pillow>=10.0",
+    "google-genai>=1.0",
+    "pydantic>=2.0",
+    "openpyxl>=3.1",
+    "python-dotenv>=1.0",
+    "playwright>=1.40",
+]
+
+[project.optional-dependencies]
+enhance = ["rembg[cpu]>=2.0"]
+dev = [
+    "pytest>=8.0",
+    "pytest-cov>=5.0",
+    "ruff>=0.6",
+]
+
+[project.scripts]
+lowprice-source = "lowprice.pipeline:main"
+lowprice-review = "lowprice.review:main"
+lowprice-upload = "lowprice.phase2.oms_uploader:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = [
+    "E501",  # long lines are usually prose in docstrings here
+]

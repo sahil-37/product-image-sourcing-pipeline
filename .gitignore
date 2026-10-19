@@ -1,0 +1,39 @@
+# --- Secrets and live sessions — NEVER commit these ---
+.env
+work/oms_storage_state.json
+work/oms_browser_profile/
+
+# --- Generated working data ---
+work/
+library/
+library_enhanced/
+# /browse's "Download ZIP" -- a manual-download artifact, not pipeline input
+data/product-images-*.zip
+data/product-images-*/
+# Batch zips built from disk for bulk_upload_woopsa.py
+data/batch*-accepted-*.zip
+# per-batch pilot libraries
+library_*/
+review.html
+review_*.html
+*.log
+
+# --- Web app ---
+app/node_modules/
+app/.next/
+app/.env.local
+app/next-env.d.ts
+app/tsbuildinfo
+app/*.tsbuildinfo
+.vercel
+
+# --- Python ---
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+
+# --- OS / editor ---
+.DS_Store
+*.swp

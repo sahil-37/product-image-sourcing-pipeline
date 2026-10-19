@@ -1,0 +1,43 @@
+<html><body>
+<input id="searchInput" placeholder="Item #, description, UPC, vendor item #… ">
+<div id="resultList" class="result-list"></div>
+<section id="rightPanel"><div id="editor" class="view-mode">
+  <div id="edSticky"><div class="ed-head"></div></div>
+  <div id="pv1ImageSlot"><div><div>
+    <div><div style="cursor:default"><img alt="Master" src="x.jpg"></div><div>Master</div></div>
+    <div><div id="dz" title="Click to upload a new distributor image" style="cursor:pointer"><span>Click to upload</span></div><div>Distributor</div></div>
+  </div>
+  <div id="tg" title="Toggle which image is shown"><span><span></span></span><span>Show Distributor Image</span><span class="badge badge-dim">Master</span></div>
+  </div></div>
+  <button id="editBtn" class="btn btn-primary">Edit</button>
+  <button id="saveBtn" class="btn btn-primary hidden">Save</button>
+</div></section>
+<script>
+const ITEMS = [
+  {id:'1049', name:'2L COKE (COKE)'},
+  {id:'10496', name:'DECOY ITEM 10496'},      // prefix collision with 1049
+  {id:'1050', name:'2L COKE DIET (COKE)'},
+  {id:'103313', name:'1L POLAR SELTZER LEMON'},
+];
+const list = document.getElementById('resultList');
+function render(q){
+  list.innerHTML = '';
+  ITEMS.filter(i => !q || i.id.includes(q) || i.name.toLowerCase().includes(q.toLowerCase()))
+    .forEach(i => { const d=document.createElement('div'); d.className='res-row';
+      d.innerHTML = '<span>#'+i.id+'</span> '+i.name;
+      d.onclick = () => {
+        document.querySelector('#edSticky .ed-head').textContent = '#'+i.id+' '+i.name+' ACTIVE VIEW';
+        document.getElementById('editBtn').classList.remove('hidden');
+        document.getElementById('saveBtn').classList.add('hidden');
+      };
+      list.appendChild(d); });
+}
+document.getElementById('searchInput').addEventListener('input', e => setTimeout(()=>render(e.target.value), 450));
+render('');
+document.getElementById('dz').onclick = () => { const i=document.createElement('input'); i.type='file'; i.id='uploaded'; document.body.appendChild(i); i.click();
+  document.getElementById('saveBtn').classList.remove('hidden'); document.getElementById('editBtn').classList.add('hidden'); };
+document.getElementById('tg').onclick = () => { const b=document.querySelector('#pv1ImageSlot span.badge');
+  const on = b.textContent==='Master'; b.textContent = on?'Distributor':'Master'; b.className = on?'badge badge-ok':'badge badge-dim'; };
+document.getElementById('saveBtn').onclick = () => { setTimeout(()=>{ document.getElementById('saveBtn').classList.add('hidden');
+  document.getElementById('editBtn').classList.remove('hidden'); }, 300); };
+</script></body></html>
